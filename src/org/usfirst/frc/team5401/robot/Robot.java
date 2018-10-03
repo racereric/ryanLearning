@@ -1,19 +1,15 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
 package org.usfirst.frc.team5401.robot;
 
-import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import org.usfirst.frc.team5401.robot.commands.ExampleCommand;
-import org.usfirst.frc.team5401.robot.subsystems.ExampleSubsystem;
+
+import org.usfirst.frc.team5401.robot.commands.XboxMove;
+import org.usfirst.frc.team5401.robot.subsystems.*;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -22,12 +18,17 @@ import org.usfirst.frc.team5401.robot.subsystems.ExampleSubsystem;
  * creating this project, you must also update the build.properties file in the
  * project.
  */
-public class Robot extends TimedRobot {
-	public static ExampleSubsystem m_subsystem = new ExampleSubsystem();
-	public static OI m_oi;
+public class Robot extends IterativeRobot {
 
-	Command m_autonomousCommand;
-	SendableChooser<Command> m_chooser = new SendableChooser<>();
+	public static DriveBase drivebase;
+	public static GearMechanism gearmechanism;
+	public static Unjammer unjammer;
+	public static Shooter shooter;
+	public static CompressorSubsystem compressorsubsystem;
+	public static Loader loader;
+	public static Infeed infeed;
+	public static Climber climber;
+	public static OI oi;
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -35,10 +36,8 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void robotInit() {
-		m_oi = new OI();
-		m_chooser.addDefault("Default Auto", new ExampleCommand());
-		// chooser.addObject("My Auto", new MyAutoCommand());
-		SmartDashboard.putData("Auto mode", m_chooser);
+		drivebase = new DriveBase();
+		oi = new OI();
 	}
 
 	/**
@@ -69,7 +68,7 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void autonomousInit() {
-		m_autonomousCommand = m_chooser.getSelected();
+	
 
 		/*
 		 * String autoSelected = SmartDashboard.getString("Auto Selector",
@@ -79,9 +78,8 @@ public class Robot extends TimedRobot {
 		 */
 
 		// schedule the autonomous command (example)
-		if (m_autonomousCommand != null) {
-			m_autonomousCommand.start();
-		}
+
+		
 	}
 
 	/**
@@ -98,9 +96,7 @@ public class Robot extends TimedRobot {
 		// teleop starts running. If you want the autonomous to
 		// continue until interrupted by another command, remove
 		// this line or comment it out.
-		if (m_autonomousCommand != null) {
-			m_autonomousCommand.cancel();
-		}
+        Scheduler.getInstance().add(new XboxMove());
 	}
 
 	/**

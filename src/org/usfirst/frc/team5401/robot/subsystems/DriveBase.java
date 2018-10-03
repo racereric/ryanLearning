@@ -48,7 +48,7 @@ public class DriveBase extends Subsystem {
 	    leftEncoder = new Encoder(RobotMap.LEFT_ENC_1, RobotMap.LEFT_ENC_2, true, Encoder.EncodingType.k4X);
 	    rightEncoder = new Encoder(RobotMap.RIGHT_ENC_1, RobotMap.RIGHT_ENC_2, true, Encoder.EncodingType.k4X);
 	    
-	    navxGyro = new AHRS(RobotMap.SerialPort.Port.kMXP);
+	    navxGyro = new AHRS(SerialPort.Port.kMXP);
 	    navxGyro.reset();
 	}
 
@@ -64,7 +64,7 @@ public class DriveBase extends Subsystem {
     	leftDriveMotor1.set(leftDriveDesired);
     	rightDriveMotor1.set(-1 * rightDriveDesired);
     	leftDriveMotor2.set(leftDriveDesired);
-    	rightDriveMotor2.set(rightDriveDesired);
+    	rightDriveMotor2.set(-1 * rightDriveDesired);
     	
     	SmartDashboard.putNumber("Left Encoder Raw", leftEncoder.get());
     	SmartDashboard.putNumber("Right Enc Raw", rightEncoder.get());
@@ -118,8 +118,11 @@ public class DriveBase extends Subsystem {
     	SmartDashboard.putNumber("Left Enc Raw", leftEncRaw);
     	SmartDashboard.putNumber("Right Enc Raw", rightEncRaw);
     	double leftEncAdj = leftEncoder.getDistance();
-    	double rightEncAdj = rightEnocder
-    	return encoderDistanceAdj;
+    	double rightEncAdj = rightEncoder.getDistance();
+    	SmartDashboard.putNumber("Left Enc Adj", leftEncAdj);
+    	SmartDashboard.putNumber("Rigth Enc Adj", rightEncAdj);
+    	double encoderDistance = (leftEncAdj + rightEncAdj) / 2;
+    	return encoderDistance;
     }
     
     public double reportGyro() {
